@@ -1,0 +1,3 @@
+org/vaadin/entity/Contact.class
+org/vaadin/PhoneBookView.class
+org/vaadin/dataprovider/ContactDataProvider.class
