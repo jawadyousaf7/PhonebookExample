@@ -1,58 +1,30 @@
-# Steps to setup project locally
+# Prerequisite Steps to setup project locally
 
-- Download and install vaadin. Currently i am using 24.2.1 but you can use previous as well.
+- Download and install IntelliJ
 - Download and install Java 17.
-- Create basic vaadin project using start.vaadin.cpom
+- Download and install mysql database.
+- Set you paths and run the project.
 
-The best way to use it is via [vaadin.com/start](https://vaadin.com/start) - you can get only the necessary parts and choose the package naming you want to use.
-There is also a [getting started tutorial](https://vaadin.com/tutorials/getting-started-with-flow) based on this project.
 
-To access it directly from github, clone the repository and import the project to the IDE of your choice as a Maven project. You need to have Java 8 or 11 installed.
+# Few screen shots of project screens and with applied validations
+ - First load screen fetching data from database.
+![Welcome Screen.png](..%2FPictures%2FWelcome%20Screen.png)
 
-Run using `mvn jetty:run` and open [http://localhost:8080](http://localhost:8080) in the browser.
 
-If you want to run your app locally in the production mode, run `mvn jetty:run -Pproduction`.
+ - Add new record screen
+![Add record screen.png](..%2FPictures%2FAdd%20record%20screen.png)
 
-### Running Integration Tests
+ - Screen with unique phone number validation
+![Screen with unique phone number validation.png](..%2FPictures%2FScreen%20with%20unique%20phone%20number%20validation.png)
 
-Integration tests are implemented using [Vaadin TestBench](https://vaadin.com/testbench). The tests take a few minutes to run and are therefore included in a separate Maven profile. We recommend running tests with a production build to minimize the chance of development time toolchains affecting test stability. To run the tests using Google Chrome, execute
+ - Screen with basic form validations
+![Screenwithformvalidation.png](..%2FPictures%2FScreenwithformvalidation.png)
 
-`mvn verify -Pit,production`
+ - Screen For Delete Verification
+![ScreenWithDelete1.png](..%2FPictures%2FScreenWithDelete1.png)
 
-and make sure you have a valid TestBench license installed (you can obtain a 
-trial license from the [trial page](
-https://vaadin.com/trial)).
+ - After deletion the record has been deleted
+![Main Screen after delete.png](..%2FPictures%2FMain%20Screen%20after%20delete.png)
 
-## Project structure
-
-The project follow Maven's [standard directory layout structure](https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html):
-- Under the `srs/main/java` are located Application sources
-    - `AppShell.java` configures the @PWA annotation making the application 
-      installable
-    - `GreetService.java` is a service class
-    - `MainView.java` is an example Vaadin view
-- Under the `srs/test` are located the TestBench test files
-- `src/main/resources` contains configuration files and static resources
-- The `frontend` directory in the root folder contains client-side 
-  dependencies and resource files. Example CSS styles used by the application 
-  are located under `frontend/themes`
-
-## Workspace.xml file
-IntelliJ IDEA uses `workspace.xml` file to cache user-specific project configuration.
-Tracking of local changes to the `workspace.xml` file can be prevented with the `git update-index --assume-unchanged .idea/workspace.xml` command.
-And to revert the setting: `git update-index --no-assume-unchanged .idea/workspace.xml`.
-
-## Useful links
-
-- Read the documentation at [vaadin.com/docs](https://vaadin.com/docs).
-- Follow the tutorials at [vaadin.com/tutorials](https://vaadin.com/tutorials).
-- Watch training videos and get certified at [vaadin.com/learn/training]( https://vaadin.com/learn/training).
-- Create new projects at [start.vaadin.com](https://start.vaadin.com/).
-- Search UI components and their usage examples at [vaadin.com/components](https://vaadin.com/components).
-- Find a collection of solutions to common use cases in [Vaadin Cookbook](https://cookbook.vaadin.com/).
-- Find Add-ons at [vaadin.com/directory](https://vaadin.com/directory).
-- Ask questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/vaadin) or join our [Discord channel](https://discord.gg/MYFq5RTbBn).
-- Report issues, create pull requests in [GitHub](https://github.com/vaadin/).
-
-For a full Vaadin application example, there are more choices available also from [vaadin.com/start](https://vaadin.com/start) page.
-
+ - Screen with updated notification record.
+![ScreenWithUpdatedRecordNotification.png](..%2FPictures%2FScreenWithUpdatedRecordNotification.png)

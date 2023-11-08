@@ -15,16 +15,12 @@ import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.data.validator.RegexpValidator;
 import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.router.Route;
-
-
-
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import org.vaadin.dataprovider.ContactDataProvider;
 import org.vaadin.entity.Contact;
+import org.vaadin.dao.ContactsDao;
 
 
 
@@ -45,18 +41,23 @@ public class PhoneBookView extends VerticalLayout {
     private Boolean isAddContactClicked = false;
      static Map<String, Contact> contactList = new HashMap<String, Contact>();
     private LocalDateTime lastUpdatedTimeFlag;
+    private transient ContactsDao contactsDao = new ContactsDao();
     private boolean warnOnAlreadyUpdatedContact = true;
+
 
     public PhoneBookView() {
         initView();
     }
 
+    /*
+    Main method
+     */
     private void initView() {
         crud = new Crud<>(Contact.class, createEditor());
         crud.setEditOnClick(true);
         crud.setSizeFull();
         setGridColumns();
-        ContactDataProvider.setContactMap(contactDataProvider.getContacts());
+        ContactDataProvider.setContactMap(contactsDao.getContacts());
         crud.setDataProvider(contactDataProvider);
         crud.addSaveListener(e -> {
             saveContact(e.getItem());
@@ -72,7 +73,7 @@ public class PhoneBookView extends VerticalLayout {
         crud.setNewButton(customAddContactButton());
         add(crud);
     }
-
+    /* Creating add button*/
     private Button customAddContactButton() {
         Button addContactButton = new Button("Add Contact", VaadinIcon.PLUS.create());
         addContactButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -84,7 +85,9 @@ public class PhoneBookView extends VerticalLayout {
         });
         return addContactButton;
     }
-
+    /*
+    Creating Editor
+    */
     private CrudEditor<Contact> createEditor() {
 
         FormLayout formLayout = new FormLayout(name, phoneNumber, email, street, city, country);
@@ -97,35 +100,44 @@ public class PhoneBookView extends VerticalLayout {
         binder.bind(country, Contact::getCountry, Contact::setCountry);
         return new BinderCrudEditor<>(binder, formLayout);
     }
-
+    /* Save Contact */
     private void saveContact(Contact contact) {
+
+        if (!isAddContactClicked && warnOnAlreadyUpdatedContact && isContactAlreadyUpdated()){
+            createWarningDialogue();
+            crud.getDataProvider().refreshItem(contact);
+
+        }
         contact.setLastUpdatedTime(LocalDateTime.now());
         boolean isSuccess = true;
 
-        if(!contact.getPhoneNumber().equals(editPhoneNumber)){
+        if (Objects.isNull(editPhoneNumber)) {
+            isSuccess = contactsDao.addContact(contact);
+        } else if (!contact.getPhoneNumber().equals(editPhoneNumber)) {
             deleteContact(editPhoneNumber);
-            isSuccess = true;
+            isSuccess = contactsDao.addContact(contact);
+        } else {
+            isSuccess = contactsDao.updateContact(contact);
         }
-        if(isSuccess){
-            contactList = contactDataProvider.addContact(contact);
+        if (isSuccess) {
+            contactDataProvider.persist(contact);
         }
     }
-
+    /* Deleting Contact */
     private void deleteContact(String phoneNumber) {
 
-        contactDataProvider.deleteContact(phoneNumber);
+        if (contactsDao.deleteContact(phoneNumber)) {
+            contactDataProvider.delete(phoneNumber);
+        }
     }
-
+    /* Adding columns */
     private void setGridColumns() {
         crud.getGrid().removeColumn(crud.getGrid().getColumnByKey("lastUpdatedTime"));
         crud.getGrid().setColumnOrder(crud.getGrid().getColumnByKey("name"), crud.getGrid().getColumnByKey("phoneNumber"), crud.getGrid().getColumnByKey("email"), crud.getGrid().getColumnByKey("street"), crud.getGrid().getColumnByKey("city"), crud.getGrid().getColumnByKey("country"));
     }
-
+    /* Basic form Validations */
     private void validateFields() {
 
-        if (!isAddContactClicked && warnOnAlreadyUpdatedContact && isContactAlreadyUpdated()) {
-                createWarningDialogue();
-        }
         SerializablePredicate<String> alreadyExist = value -> !(contactDataProvider.contains(phoneNumber.getValue()) && (isAddContactClicked || !phoneNumber.getValue().equals(editPhoneNumber)));
         Binder.Binding<Contact, String> phoneBinding = binder.forField(phoneNumber).asRequired().withValidator(alreadyExist, "Phone Number Already Exist").withValidator(new RegexpValidator("Only 0-9 allowed","\\d*"))
                 .bind(Contact::getPhoneNumber, Contact::setPhoneNumber);
@@ -154,7 +166,7 @@ public class PhoneBookView extends VerticalLayout {
         }, "Only letters required").bind(Contact::getCountry, Contact::setCountry);
 
     }
-
+    /* Creating waring dialogue */
     private void createWarningDialogue() {
         ConfirmDialog warningOnAlreadyUpdateContact = new ConfirmDialog();
         warningOnAlreadyUpdateContact.setHeader("Already Updated");
@@ -162,10 +174,10 @@ public class PhoneBookView extends VerticalLayout {
         warningOnAlreadyUpdateContact.setConfirmText("OK");
         warningOnAlreadyUpdateContact.open();
         warnOnAlreadyUpdatedContact = false;
-        crud.getDataProvider().refreshAll();
 
     }
 
+    /* Comparing last Updated time with current record in edit mode */
     private Boolean isContactAlreadyUpdated() {
         Optional<Contact> contactOptional = contactDataProvider.find(editPhoneNumber);
         if (contactOptional.isPresent() && contactOptional.get().getLastUpdatedTime().equals(lastUpdatedTimeFlag))

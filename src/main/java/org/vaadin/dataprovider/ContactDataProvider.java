@@ -19,6 +19,9 @@ public class ContactDataProvider extends AbstractBackEndDataProvider<Contact, Cr
         contactsMap = map;
     }
 
+    /*
+    Keeping CRUD updated using offset
+    */
     @Override
     protected Stream<Contact> fetchFromBackEnd(Query<Contact, CrudFilter> query) {
         int offset = query.getOffset();
@@ -29,7 +32,9 @@ public class ContactDataProvider extends AbstractBackEndDataProvider<Contact, Cr
         }
         return stream.skip(offset).limit(limit);
     }
-
+    /*
+    For Comparing Objects
+     */
     private static Predicate<Contact> predicate(CrudFilter filter) {
         return filter.getConstraints().entrySet().stream().map(constraint -> (Predicate<Contact>) contact -> {
             try {
@@ -41,7 +46,9 @@ public class ContactDataProvider extends AbstractBackEndDataProvider<Contact, Cr
             }
         }).reduce(Predicate::and).orElse(e -> true);
     }
-
+    /*
+    getting value of fields
+    */
     private static Object valueOf(String fieldName, Contact contact) {
         try {
             Field field = Contact.class.getDeclaredField(fieldName);
@@ -52,6 +59,9 @@ public class ContactDataProvider extends AbstractBackEndDataProvider<Contact, Cr
         }
     }
 
+    /*
+    Comparing values
+     */
     private static Comparator<Contact> comparator(CrudFilter filter) {
         return filter.getSortOrders().entrySet().stream().map(sortClause -> {
             try {
@@ -67,47 +77,37 @@ public class ContactDataProvider extends AbstractBackEndDataProvider<Contact, Cr
             }
         }).reduce(Comparator::thenComparing).orElse((o1, o2) -> 0);
     }
-
+    /*
+    Find record from database
+    */
     public Optional<Contact> find(String phoneNumber) {
         return Optional.ofNullable(contactsMap.get(phoneNumber));
 
     }
 
-
+    /*
+    Checking does record already exists in hashmap
+    */
     public boolean contains(String phoneNumber) {
         return contactsMap.containsKey(phoneNumber);
     }
 
-
+/*
+Deleting RECORD
+*/
     public void delete(String phoneNumber) {
         contactsMap.remove(phoneNumber);
     }
-
+    /* Checking records from the grid */
     @Override
     protected int sizeInBackEnd(Query<Contact, CrudFilter> query) {
         long count = fetchFromBackEnd(query).count();
         return (int) count;
     }
-    public Map<String, Contact> getContacts() {
-
-        contact.setPhoneNumber("92333666997894");
-        contact.setName("Ali");
-        contact.setEmail("abc@xyz.com");
-        contact.setStreet("6");
-        contact.setCity("Lahore");
-        contact.setCountry("Pakistan");
+    /* Persisting record */
+    public void persist(Contact contact) {
         contactsMap.put(contact.getPhoneNumber(), contact);
 
-        return contactsMap;
-    }
-
-    public Map<String, Contact> addContact(Contact contact) {
-        contactsMap.put(contact.getPhoneNumber() ,contact);
-        return contactsMap;
-    }
-
-    public void deleteContact(String phoneNumber) {
-        contactsMap.remove(phoneNumber);
     }
 
 }
