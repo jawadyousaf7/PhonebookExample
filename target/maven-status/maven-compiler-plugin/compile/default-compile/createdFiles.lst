@@ -1,5 +1,0 @@
-org/vaadin/entity/Contact.class
-org/vaadin/PhoneBookView.class
-org/vaadin/dao/ContactsDao.class
-org/vaadin/dao/DBConnection.class
-org/vaadin/dataprovider/ContactDataProvider.class
