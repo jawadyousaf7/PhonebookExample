@@ -1,21 +1,21 @@
-# Prerequisite Steps to setup project locally
+# Prerequisite
 
-- Download and install IntelliJ
+- Download and install IntelliJ.
 - Download and install Java 17.
-- Download and install mysql database.
-- Set you paths and run the project.
+- Download and install mysql database and run script provided in project src/main/resources folder.
+- Set your java path and run the project.
 
 
-# Few screen shots of project screens and with applied validations
+# Few project screenshots are provided below.
  - First load screen fetching data from database.
-   ![Welcome Screen.png](Screenshots/Welcome Screen.png)
+   ![Welcome Screen.png](Screenshots%2FWelcome%20Screen.png)
 
 
  - Add new record screen
-   ![Add record screen.png](Screenshots/Add record screen.png)
+   ![Add record screen.png](Screenshots%2FAdd%20record%20screen.png)
 
  - Screen with unique phone number validation
-   ![Screen with unique phone number validation.png](Screenshots/Screen with unique phone number validation.png)
+   ![Screen with unique phone number validation.png](Screenshots%2FScreen%20with%20unique%20phone%20number%20validation.png)
 
  - Screen with basic form validations
    ![Screenwithformvalidation.png](Screenshots/Screenwithformvalidation.png)
@@ -24,7 +24,7 @@
    ![ScreenWithDelete1.png](Screenshots/ScreenWithDelete1.png)
 
  - After deletion the record has been deleted
-   ![Main Screen after delete.png](Screenshots/Main Screen after delete.png)
+  ![Main Screen after delete.png](Screenshots%2FMain%20Screen%20after%20delete.png)
 
  - Screen with updated notification record.
-   ![ScreenWithUpdatedRecordNotification.png](Screenshots/ScreenWithUpdatedRecordNotification.png)
+   ![ScreenWithUpdatedRecordNotification.png](Screenshots%2FScreenWithUpdatedRecordNotification.png)
